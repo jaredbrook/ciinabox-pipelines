@@ -46,21 +46,22 @@ import java.util.concurrent.*
 import java.io.InputStreamReader
 
 def call(body) {
-  def config = body
-  def cf = setupCfClient(config.region, config.accountId, config.role)
+  node {
+    def config = body
+    def cf = setupCfClient(config.region, config.accountId, config.role)
 
-  if(!(config.action || config.queryType)){
-    throw new GroovyRuntimeException("Either action or queryType (or both) must be specified")
+    if(!(config.action || config.queryType)){
+      throw new GroovyRuntimeException("Either action or queryType (or both) must be specified")
+    }
+
+    if(config.action){
+      handleActionRequest(cf, config)
+    }
+
+    if(config.queryType){
+      return handleQueryRequest(cf, config)
+    }  
   }
-
-  if(config.action){
-    handleActionRequest(cf, config)
-  }
-
-  if(config.queryType){
-    return handleQueryRequest(cf, config)
-  }
-
 }
 
 @NonCPS
@@ -532,7 +533,7 @@ def setCfTemplateUrl(ssm, config, basePath) {
     throw new GroovyRuntimeException("Unable to load CfTemplateUrl ssm param for stack ${config.stackName} from ssm path ${basePath}")
   }
 }
- 
+
 @NonCPS
 def saveStackState(cf, config) {
   def stacks = cf.describeStacks(new DescribeStacksRequest().withStackName(config.stackName)).getStacks()
@@ -558,7 +559,7 @@ def saveStackState(cf, config) {
           .withType('String')
           .withValue(output.outputValue)
           .withOverwrite(true)
-        )        
+        )
       }
       out += "${basePath}/${output.outputKey}=${output.outputValue}\n"
     }
