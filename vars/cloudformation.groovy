@@ -403,6 +403,7 @@ def getCredentials(awsAccountId, region, roleName) {
 def assumeRole(awsAccountId, region, roleName) {
   def roleArn = "arn:aws:iam::" + awsAccountId + ":role/" + roleName
   def roleSessionName = "sts-session-" + awsAccountId
+  println "check assumeRole"
   println "assuming IAM role ${roleArn}"
   def sts = new AWSSecurityTokenServiceClient()
   if (!region.equals("us-east-1")) {
