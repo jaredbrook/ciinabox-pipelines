@@ -46,28 +46,34 @@ import java.util.concurrent.*
 import java.io.InputStreamReader
 
 def call(body) {
+  println "check 1"
   node {
+    println "check 2"
     def config = body
+    println "check 3"
     def cf = setupCfClient(config.region, config.accountId, config.role)
-
+    println "check 10"
     if(!(config.action || config.queryType)){
+      println "check 11"
       throw new GroovyRuntimeException("Either action or queryType (or both) must be specified")
+      println "check 12"
     }
-
+    println "check 13"
     if(config.action){
+      println "check 14"
       handleActionRequest(cf, config)
     }
 
     if(config.queryType){
       return handleQueryRequest(cf, config)
-    }  
+    }
   }
 }
 
 @NonCPS
 def handleActionRequest(cf, config){
   def success = false
-
+  println "check 15"
   switch(config.action) {
     case 'exists':
       if(doesStackExist(cf,config.stackName)) {
@@ -93,10 +99,15 @@ def handleActionRequest(cf, config){
       success = wait(cf, config.stackName, StackStatus.DELETE_COMPLETE)
       break
     case 'update':
+      println "check 16"
       if(update(cf, config)) {
+        println "check 17"
         success = wait(cf, config.stackName, StackStatus.UPDATE_COMPLETE)
+        println "check 18"
       } else {
+        println "check 19"
         success = true
+        println "check 20"
       }
     break
   }
@@ -334,11 +345,17 @@ def doesStackExist(cf, stackName) {
 
 @NonCPS
 def setupCfClient(region, awsAccountId = null, role =  null) {
+  println "check 4"
   def cb = AmazonCloudFormationClientBuilder.standard().withRegion(region)
+  println "check 5"
   def creds = getCredentials(awsAccountId, region, role)
+  println "check 6"
   if(creds != null) {
+    println "check 7"
     cb.withCredentials(new AWSStaticCredentialsProvider(creds))
+    println "check 8"
   }
+  println "check 9"
   return cb.build()
 }
 
