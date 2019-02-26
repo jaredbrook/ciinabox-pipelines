@@ -47,7 +47,7 @@ import java.io.InputStreamReader
 
 def call(body) {
   println "check 1"
-  node {
+
     println "check 2"
     def config = body
     println "check 3"
@@ -67,7 +67,7 @@ def call(body) {
     if(config.queryType){
       return handleQueryRequest(cf, config)
     }
-  }
+
 }
 
 @NonCPS
