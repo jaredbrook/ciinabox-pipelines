@@ -61,9 +61,44 @@ def call(body) {
 @NonCPS
 def setupCfClient(region, awsAccountId = null, role =  null) {
   def cb = AmazonCloudFormationClientBuilder.standard().withRegion(region)
-  // def creds = getCredentials(awsAccountId, region, role)
+  def creds = getCredentials(awsAccountId, region, role)
   // if(creds != null) {
   //   cb.withCredentials(new AWSStaticCredentialsProvider(creds))
   // }
-  // return cb.build()
+  return cb.build()
+}
+
+@NonCPS
+def getCredentials(awsAccountId, region, roleName) {
+  if(env['AWS_SESSION_TOKEN'] != null) {
+    return new BasicSessionCredentials(
+      env['AWS_ACCESS_KEY_ID'],
+      env['AWS_SECRET_ACCESS_KEY'],
+      env['AWS_SESSION_TOKEN']
+    )
+  } else if(awsAccountId != null && roleName != null) {
+    def stsCreds = assumeRole(awsAccountId, region, roleName)
+    return new BasicSessionCredentials(
+      stsCreds.getAccessKeyId(),
+      stsCreds.getSecretAccessKey(),
+      stsCreds.getSessionToken()
+    )
+  } else {
+    return null
+  }
+}
+
+@NonCPS
+def assumeRole(awsAccountId, region, roleName) {
+  def roleArn = "arn:aws:iam::" + awsAccountId + ":role/" + roleName
+  def roleSessionName = "sts-session-" + awsAccountId
+  println "assuming IAM role ${roleArn}"
+  def sts = new AWSSecurityTokenServiceClient()
+  if (!region.equals("us-east-1")) {
+      sts.setEndpoint("sts." + region + ".amazonaws.com")
+  }
+  def assumeRoleResult = sts.assumeRole(new AssumeRoleRequest()
+            .withRoleArn(roleArn).withDurationSeconds(3600)
+            .withRoleSessionName(roleSessionName))
+  return assumeRoleResult.getCredentials()
 }
