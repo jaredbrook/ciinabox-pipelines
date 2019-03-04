@@ -48,13 +48,10 @@ import java.io.InputStreamReader
 
 def call(body) {
   println "check 1"
-  sleep(10)
   def config = body
   println "check 2"
-  sleep(10)
   def cf = setupCfClient(config.region, config.accountId, config.role)
   println "check 3"
-  sleep(10)
   println "check 4"
   if(!(config.action || config.queryType)){
     throw new GroovyRuntimeException("Either action or queryType (or both) must be specified")
