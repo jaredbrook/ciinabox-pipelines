@@ -48,19 +48,19 @@ import java.io.InputStreamReader
 
 def call(body) {
   println "check 1"
-  sleep(10000)
+  sleep(10)
   def config = body
   println "check 2"
-  sleep(10000)
+  sleep(10)
   def cf = setupCfClient(config.region, config.accountId, config.role)
   println "check 3"
-  sleep(10000)
+  sleep(10)
   println "check 4"
 }
 
 @NonCPS
 def setupCfClient(region, awsAccountId = null, role =  null) {
-  // def cb = AmazonCloudFormationClientBuilder.standard().withRegion(region)
+  def cb = AmazonCloudFormationClientBuilder.standard().withRegion(region)
   // def creds = getCredentials(awsAccountId, region, role)
   // if(creds != null) {
   //   cb.withCredentials(new AWSStaticCredentialsProvider(creds))
