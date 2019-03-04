@@ -56,6 +56,18 @@ def call(body) {
   println "check 3"
   sleep(10)
   println "check 4"
+  if(!(config.action || config.queryType)){
+    throw new GroovyRuntimeException("Either action or queryType (or both) must be specified")
+  }
+  println "check 5"
+  if(config.action){
+    handleActionRequest(cf, config)
+  }
+  println "check 6"
+  if(config.queryType){
+    return handleQueryRequest(cf, config)
+  }
+  println "check 7"
 }
 
 @NonCPS
