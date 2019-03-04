@@ -56,6 +56,7 @@ def call(body) {
   println "check 3"
   sleep(10)
   println "check 4"
+  return true
 }
 
 @NonCPS
