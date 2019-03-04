@@ -66,9 +66,11 @@ def setupCfClient(region, awsAccountId = null, role =  null) {
   println "check 2 2"
   def creds = getCredentials(awsAccountId, region, role)
   println "check 2 3"
-  // if(creds != null) {
-  //   cb.withCredentials(new AWSStaticCredentialsProvider(creds))
-  // }
+  if(creds != null) {
+    println "check 2 4"
+    cb.withCredentials(new AWSStaticCredentialsProvider(creds))
+    println "check 2 5"
+  }
   return cb.build()
 }
 
