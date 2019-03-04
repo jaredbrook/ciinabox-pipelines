@@ -61,8 +61,11 @@ def call(body) {
 
 @NonCPS
 def setupCfClient(region, awsAccountId = null, role =  null) {
+  println "check 2 1"
   def cb = AmazonCloudFormationClientBuilder.standard().withRegion(region)
+  println "check 2 2"
   def creds = getCredentials(awsAccountId, region, role)
+  println "check 2 3"
   // if(creds != null) {
   //   cb.withCredentials(new AWSStaticCredentialsProvider(creds))
   // }
@@ -71,6 +74,7 @@ def setupCfClient(region, awsAccountId = null, role =  null) {
 
 @NonCPS
 def getCredentials(awsAccountId, region, roleName) {
+  println "check 2 2 1"
   if(env['AWS_SESSION_TOKEN'] != null) {
     return new BasicSessionCredentials(
       env['AWS_ACCESS_KEY_ID'],
@@ -91,15 +95,19 @@ def getCredentials(awsAccountId, region, roleName) {
 
 @NonCPS
 def assumeRole(awsAccountId, region, roleName) {
+  println "check 2 2 1 1"
   def roleArn = "arn:aws:iam::" + awsAccountId + ":role/" + roleName
   def roleSessionName = "sts-session-" + awsAccountId
   println "assuming IAM role ${roleArn}"
   def sts = new AWSSecurityTokenServiceClient()
+  println "check 2 2 1 2"
   if (!region.equals("us-east-1")) {
       sts.setEndpoint("sts." + region + ".amazonaws.com")
   }
   def assumeRoleResult = sts.assumeRole(new AssumeRoleRequest()
             .withRoleArn(roleArn).withDurationSeconds(3600)
             .withRoleSessionName(roleSessionName))
+
+  println "check 2 2 1 3"
   return assumeRoleResult.getCredentials()
 }
